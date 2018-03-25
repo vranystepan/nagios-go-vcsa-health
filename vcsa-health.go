@@ -149,11 +149,14 @@ func exitUnknown(msg string) {
 func exitFinal(messages []string, status string, exitCode int) {
 
   // print nagios status
-  fmt.Println(status + ":")
+  fmt.Printf("%s: ", status)
 
   // go through messages
-  for _,message := range messages {
-    fmt.Println(message)
+  for messageIndex, message := range messages {
+    fmt.Printf("%s", message)
+    if messageIndex < cap(messages){
+      fmt.Printf(", ")
+    }
   }
 
   //exit the program
