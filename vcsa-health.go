@@ -4,11 +4,11 @@ import (
   "os"
   "fmt"
   "flag"
-//  "encoding/json"
+  "encoding/json"
   "gopkg.in/resty.v1"
 )
 
-type Message struct {
+type VapiMessage struct {
   Value string `json:"value"`
 }
 
@@ -22,9 +22,11 @@ func main() {
   // login to the VAPI
   client1 := resty.New()
   client1.SetBasicAuth(hostUsername, hostPassword)
-  authResp, authErr := client1.R().Post("https://" + host + "")
+  authResp, authErr := client1.R().Post("https://" + host + "/rest/com/vmware/cis/session")
   handleError(authErr)
-  fmt.Println(authResp)
+  authData := VapiMessage{}
+  authDataJsonErr := json.unmarshall(authResp.Body(), &authData)
+  handleError(authDataJsonErr)
   
   // parse auth token with encoding/json
 
@@ -37,7 +39,6 @@ func main() {
 // custom functions
 
 func handleError(err error) {
-  // a generic function to handle response errors
   if err != nil {
     exitUnknown(err.Error())
   }
