@@ -9,7 +9,7 @@ import (
 )
 
 type vapiMessage struct {
-  Value string `json:"value"`
+  value string `json:"value"`
 }
 
 type vapiEndpoint struct {
@@ -64,19 +64,36 @@ func main() {
   authData := vapiMessage{}
   authDataJsonErr := json.Unmarshal(authResp.Body(), &authData)
   handleError(authDataJsonErr)
-  authToken := authData.Value
+  authToken := authData.value
 
-  // get health status
-  healthResp, healthErr := c.R().
-    SetHeader("vmware-api-session-id", authToken).
-    Get("https://" + host + "/rest/appliance/health/applmgmt")
-  handleError(healthErr)
+  // set variables for the avaluation
+  overallStatus := ""
+  statusMessages := []string{}
 
-  // parse health data with encoding/json
-  healthData := vapiMessage{}
-  healthDataJsonErr := json.Unmarshal(healthResp.Body(), &healthData)
-  handleError(healthDataJsonErr)
+  for vapiEndpointIndex, vapiEndpointObj := range vapiEndpointList {
+    if subcommand != "all" {
+      if vapiEndpointObj.name != subcommand { continue }
+    }
     
+    // get health status
+    healthResp, healthErr := c.R().
+      SetHeader("vmware-api-session-id", authToken).
+      Get("https://" + host + vapiEndpointObj.path)
+    handleError(healthErr)
+
+    // parse health data with encoding/json
+    healthData := vapiMessage{}
+    healthDataJsonErr := json.Unmarshal(healthResp.Body(), &healthData)
+    handleError(healthDataJsonErr)
+
+    // append message
+    statusMessages = append(statusMessages, vapiEndpointObj.name + " is " + healthData.value)
+    
+    
+
+  }
+
+  // evaluate messages    
 }
 
 // custom functions
