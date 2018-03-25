@@ -67,10 +67,11 @@ func main() {
   authToken := authData.value
 
   // set variables for the avaluation
-  overallStatus := ""
+  overallStatus := "green"
   statusMessages := []string{}
 
-  for vapiEndpointIndex, vapiEndpointObj := range vapiEndpointList {
+  for _, vapiEndpointObj := range vapiEndpointList {
+    // execute only one subcommand if specified
     if subcommand != "all" {
       if vapiEndpointObj.name != subcommand { continue }
     }
@@ -89,11 +90,27 @@ func main() {
     // append message
     statusMessages = append(statusMessages, vapiEndpointObj.name + " is " + healthData.value)
     
-    
+    // green can be changed to any status
+    if overallStatus == "green" { 
+      overallStatus = healthData.value
+    }
+
+    // orange can be changed only to red
+    if overallStatus == "orange" {
+      if healthData.value == "red" {
+        overallStatus = healthData.value
+      }
+    }
 
   }
 
-  // evaluate messages    
+  //evaluate overall health status
+  switch overallStatus {
+    case "green": exitFinal(statusMessages, "OK", 0)
+    case "orange": exitFinal(statusMessages, "WARNING", 2)
+    case "red": exitFinal(statusMessages, "CRITICAL", 3)
+    default: exitUnknown("overall status is missing!")
+  }  
 }
 
 // custom functions
@@ -127,4 +144,18 @@ func handleInput() {
 func exitUnknown(msg string) {
   fmt.Printf("UNKNOWN: %s\n", msg)
   os.Exit(3)
+}
+
+func exitFinal(messages []string, status string, exitCode int) {
+
+  // print nagios status
+  fmt.Println(status + ":")
+
+  // go through messages
+  for _,message := range messages {
+    fmt.Println(message)
+  }
+
+  //exit the program
+  os.Exit(exitCode)
 }
