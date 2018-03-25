@@ -144,9 +144,19 @@ func handleInput() {
   if *usernamePtr == "" { exitUnknown("--username must be set") }
   if *passwordPtr == "" { exitUnknown("--password must be set") }
   if *subcommandPtr == "" { exitUnknown("--subcommand can't be empty")  }
+  if validateSubcommand(*subcommandPtr) == false { exitUnknown("incorrect subcommand name") }
   
   // assign input params to variables  
   host, hostUsername, hostPassword, subcommand = *hostPtr, *usernamePtr, *passwordPtr, *subcommandPtr
+}
+
+func validateSubcommand(s string) bool {
+  status := false
+  for _, vapiEndpointObj := range vapiEndpointList {
+    if s == vapiEndpointObj.name { status = true }
+  }
+  if s == "all" { status = true }
+  return status
 }
 
 func exitUnknown(msg string) {
