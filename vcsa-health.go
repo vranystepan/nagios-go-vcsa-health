@@ -20,20 +20,26 @@ func main() {
   handleInput()
 
   // login to the VAPI
-  client1 := resty.New()
-  client1.SetBasicAuth(hostUsername, hostPassword)
-  authResp, authErr := client1.R().Post("https://" + host + "/rest/com/vmware/cis/session")
+  c := resty.New()
+  authResp, authErr := c.R().
+    SetBasicAuth(hostUsername, hostPassword).
+    Post("https://" + host + "/rest/com/vmware/cis/session")
   handleError(authErr)
+  
+  // parse auth token with encoding/json
   authData := VapiMessage{}
   authDataJsonErr := json.unmarshall(authResp.Body(), &authData)
   handleError(authDataJsonErr)
+  authToken := authData.Value()
+
+  // get health status
+  healthResp, healthErr := c.R().
+    SetHeader("vmware-api-session-id", authToken).
+    Get("https://" + host + "/rest/appliance/health/applmgmt")
+  handleError(healthErr)
+
+  // parse health data with encoding/json
   
-  // parse auth token with encoding/json
-
-  // assemble second web client
-
-  // do the checks
-
 }
 
 // custom functions
