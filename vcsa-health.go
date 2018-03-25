@@ -13,8 +13,8 @@ type vapiMessage struct {
 }
 
 type vapiEndpoint struct {
-  Name string
-  Path string
+  name string
+  path string
 }
 
 var host string = ""
@@ -23,12 +23,30 @@ var hostUsername string = ""
 
 // static VAPI resource mapping
 var vapiEndpointList = []vapiEndpoint{
-  vapiEndpoint{"mgmt","/rest/appliance/health/applmgmt"},
-  vapiEndpoint{"database", "/rest/appliance/health/database-storage"},
-  vapiEndpoint{"load", "/rest/appliance/health/load"},
-  vapiEndpoint{"storage", "/rest/appliance/health/storage"},
-  vapiEndpoint{"swap", "/rest/appliance/health/swap"},
-  vapiEndpoint{"system", "/rest/appliance/health/system"},
+  vapiEndpoint{
+    name: "mgmt",
+    path: "/rest/appliance/health/applmgmt",
+  },
+  vapiEndpoint{
+    name: "database", 
+    path: "/rest/appliance/health/database-storage",
+  },
+  vapiEndpoint{
+    name: "load", 
+    path: "/rest/appliance/health/load",
+  },
+  vapiEndpoint{
+    name: "storage", 
+    path: "/rest/appliance/health/storage",
+  },
+  vapiEndpoint{
+    name: "swap", 
+    path: "/rest/appliance/health/swap",
+  },
+  vapiEndpoint{
+    name: "system", 
+    path: "/rest/appliance/health/system",
+  },
 }
 
 func main() {
