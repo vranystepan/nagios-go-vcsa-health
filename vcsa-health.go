@@ -6,10 +6,11 @@ import (
   "flag"
   "encoding/json"
   "gopkg.in/resty.v1"
+  "crypto/tls"
 )
 
-type vapiMessage struct {
-  value string `json:"value"`
+type VapiMessage struct {
+  Value string `json:"value"`
 }
 
 type vapiEndpoint struct {
@@ -53,18 +54,21 @@ var vapiEndpointList = []vapiEndpoint{
 func main() {
   handleInput()
 
-  // login to the VAPI
+  // create and configure REST client
   c := resty.New()
+  c.SetTLSClientConfig(&tls.Config{ InsecureSkipVerify: true })
+
+  // login to the VAPI
   authResp, authErr := c.R().
     SetBasicAuth(hostUsername, hostPassword).
     Post("https://" + host + "/rest/com/vmware/cis/session")
-  handleError(authErr)
+  handleError("authentiation request", authErr)
   
   // parse auth token with encoding/json
-  authData := vapiMessage{}
+  authData := VapiMessage{}
   authDataJsonErr := json.Unmarshal(authResp.Body(), &authData)
-  handleError(authDataJsonErr)
-  authToken := authData.value
+  handleError("authentication json parsing", authDataJsonErr)
+  authToken := authData.Value
 
   // set variables for the avaluation
   overallStatus := "green"
@@ -80,27 +84,31 @@ func main() {
     healthResp, healthErr := c.R().
       SetHeader("vmware-api-session-id", authToken).
       Get("https://" + host + vapiEndpointObj.path)
-    handleError(healthErr)
+    handleError("health request", healthErr)
 
     // parse health data with encoding/json
-    healthData := vapiMessage{}
+    healthData := VapiMessage{}
     healthDataJsonErr := json.Unmarshal(healthResp.Body(), &healthData)
-    handleError(healthDataJsonErr)
+    handleError("health json parsing", healthDataJsonErr)
 
     // append message
-    statusMessages = append(statusMessages, vapiEndpointObj.name + " is " + healthData.value)
+    statusMessages = append(statusMessages, vapiEndpointObj.name + " is " + healthData.Value)
     
     // green can be changed to any status
     if overallStatus == "green" { 
-      overallStatus = healthData.value
+      if healthData.Value != "green" {
+        overallStatus = healthData.Value
+      }
     }
 
     // orange can be changed only to red
     if overallStatus == "orange" {
-      if healthData.value == "red" {
-        overallStatus = healthData.value
+      if healthData.Value == "red" {
+        overallStatus = healthData.Value
       }
     }
+
+    // red can't be changed to statuses with lesser severity
 
   }
 
@@ -115,9 +123,9 @@ func main() {
 
 // custom functions
 
-func handleError(err error) {
+func handleError(step string, err error) {
   if err != nil {
-    exitUnknown(err.Error())
+    exitUnknown(step + "; " + err.Error())
   }
 }
 
@@ -154,8 +162,10 @@ func exitFinal(messages []string, status string, exitCode int) {
   // go through messages
   for messageIndex, message := range messages {
     fmt.Printf("%s", message)
-    if messageIndex < cap(messages){
+    if messageIndex < len(messages)-1 {
       fmt.Printf(", ")
+    } else {
+      fmt.Printf("\n")
     }
   }
 
