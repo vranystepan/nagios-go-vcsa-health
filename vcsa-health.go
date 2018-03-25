@@ -107,8 +107,8 @@ func main() {
   //evaluate overall health status
   switch overallStatus {
     case "green": exitFinal(statusMessages, "OK", 0)
-    case "orange": exitFinal(statusMessages, "WARNING", 2)
-    case "red": exitFinal(statusMessages, "CRITICAL", 3)
+    case "orange": exitFinal(statusMessages, "WARNING", 1)
+    case "red": exitFinal(statusMessages, "CRITICAL", 2)
     default: exitUnknown("overall status is missing!")
   }  
 }
