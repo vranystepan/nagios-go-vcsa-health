@@ -20,6 +20,7 @@ type vapiEndpoint struct {
 var host string = ""
 var hostPassword string = ""
 var hostUsername string = ""
+var subcommand string = ""
 
 // static VAPI resource mapping
 var vapiEndpointList = []vapiEndpoint{
@@ -91,6 +92,7 @@ func handleInput() {
   hostPtr := flag.String("host", "", "IP or FQDN of VMware VCSA")
   usernamePtr := flag.String("username", "", "authorized user account name")
   passwordPtr := flag.String("password", "", "password in plain text")
+  subcommandPtr := flag.String("subcommand", "all", "subcommand you want to execute <all|mgmt|database|load|storage|swap|system>")
 
   // parse command line arguments
   flag.Parse()
@@ -99,9 +101,10 @@ func handleInput() {
   if *hostPtr == "" { exitUnknown("--host must be set") }
   if *usernamePtr == "" { exitUnknown("--username must be set") }
   if *passwordPtr == "" { exitUnknown("--password must be set") }
+  if *subcommandPtr == "" { exitUnknown("--subcommand can't be empty")  }
   
   // assign input params to variables  
-  host, hostUsername, hostPassword = *hostPtr, *usernamePtr, *passwordPtr
+  host, hostUsername, hostPassword, subcommand = *hostPtr, *usernamePtr, *passwordPtr, *subcommandPtr
 }
 
 func exitUnknown(msg string) {
