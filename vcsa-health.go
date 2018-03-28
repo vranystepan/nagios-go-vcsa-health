@@ -63,6 +63,7 @@ func main() {
     SetBasicAuth(hostUsername, hostPassword).
     Post("https://" + host + "/rest/com/vmware/cis/session")
   handleError("authentiation request", authErr)
+  handleHttpStatus(authResp.StatusCode(), authResp.Body())
   
   // parse auth token with encoding/json
   authData := VapiMessage{}
@@ -85,6 +86,7 @@ func main() {
       SetHeader("vmware-api-session-id", authToken).
       Get("https://" + host + vapiEndpointObj.path)
     handleError("health request", healthErr)
+    handleHttpStatus(healthResp.StatusCode(), healthResp.Body())
 
     // parse health data with encoding/json
     healthData := VapiMessage{}
@@ -113,10 +115,11 @@ func main() {
   }
   
   // logout from the appliance
-  _, deleteErr := c.R().
+  deleteResp, deleteErr := c.R().
     SetHeader("vmware-api-session-id", authToken).
     Delete("https://" + host + "/rest/com/vmware/cis/session")
   handleError("logout", deleteErr)
+  handleHttpStatus(deleteResp.StatusCode(), deleteResp.Body())
 
   //evaluate overall health status
   switch overallStatus {
@@ -132,6 +135,12 @@ func main() {
 func handleError(step string, err error) {
   if err != nil {
     exitUnknown(step + "; " + err.Error())
+  }
+}
+
+func handleHttpStatus(statusCode int, statusBody string) {
+  if statusCode != 200 {
+    exitCritical(statusBody)
   }
 }
 
@@ -168,6 +177,11 @@ func validateSubcommand(s string) bool {
 func exitUnknown(msg string) {
   fmt.Printf("UNKNOWN: %s\n", msg)
   os.Exit(3)
+}
+
+func exitCritical(msg string) {
+  fmt.Printf("CRITICAL: %s\n", msg)
+  os.Exit(2)
 }
 
 func exitFinal(messages []string, status string, exitCode int) {
