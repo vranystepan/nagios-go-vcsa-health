@@ -28,6 +28,7 @@ The motivation for writing this plugin was pretty straightforward - there's no s
    }
 ```
 2. add session deletion at the end of the program
+3. Implement some basic automated testing. But how??
 
 
 ### Sample usage #1
