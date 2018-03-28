@@ -31,6 +31,8 @@ CRITICAL: {"type":"com.vmware.vapi.std.errors.unauthenticated","value":{"message
 ### Do you want to contribute?
 That's exactly why I put my code here. Do you have some idea how to improve this plugin? I guess you know the drill. Fork it, create a new branch with your edits and submit a new PR (And please, do not forget to add description of your changes).
 
+___
+
 ### Open topics
 
 - [x] address authentication issue com.vmware.vapi.std.errors.unauthenticated
