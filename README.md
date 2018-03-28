@@ -10,7 +10,7 @@ The motivation for writing this plugin was pretty straightforward - there's no s
 
 ### Open topics
 
-1. address authentication issue com.vmware.vapi.std.errors.unauthenticated
+- [x] address authentication issue com.vmware.vapi.std.errors.unauthenticated
 
 ```json
 {  
@@ -27,8 +27,8 @@ The motivation for writing this plugin was pretty straightforward - there's no s
       ]
    }
 ```
-2. add session deletion at the end of the program
-3. Implement some basic automated testing. But how??
+- [x] add session deletion at the end of the program
+- [ ] Implement some basic automated testing. But how??
 
 
 ### Sample usage #1
