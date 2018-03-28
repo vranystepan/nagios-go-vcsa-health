@@ -3,6 +3,7 @@
 Work in progress. 
 
 ### Open topics
+
 1. address authentication issue com.vmware.vapi.std.errors.unauthenticated
 
 ```json
@@ -20,6 +21,7 @@ Work in progress.
       ]
    }
 ```
+2. add session deletion at the end of the program
 
 
 ### Sample usage #1
