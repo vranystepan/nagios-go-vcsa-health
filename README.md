@@ -2,7 +2,7 @@
 
 Simple nagios plugin to monitor vCenter Server Appliance (VCSA) via VAMI api. **Work in progress.**
 
-# Sources
+### Sources
 - [Official VMware API documentation](https://vdc-repo.vmware.com/vmwb-repository/dcr-public/1cd28284-3b72-4885-9e31-d1c6d9e26686/71ef7304-a6c9-43b3-a3cd-868b2c236c81/doc/index.html#PKG_com.vmware.cis)
 
 ### Open topics
@@ -41,5 +41,7 @@ OK: mgmt is green, database is green, load is green, storage is green, swap is g
 OK: database is green
 ```
 
+### Do you want to contribute?
+That's exactly why I put my code here. Do you have some idea how to improve this plugin? I guess you know the drill. Fork it, create a new branch with your edits and submit a new PR (And please, do not forget to add description of your changes).
 
 
