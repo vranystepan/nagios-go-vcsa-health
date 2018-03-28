@@ -111,6 +111,12 @@ func main() {
     // red can't be changed to statuses with lesser severity
 
   }
+  
+  // logout from the appliance
+  _, deleteErr := c.R().
+    SetHeader("vmware-api-session-id", authToken).
+    Delete("https://" + host + vapiEndpointObj.path)
+  handleError("logout", deleteErr)
 
   //evaluate overall health status
   switch overallStatus {
