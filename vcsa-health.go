@@ -115,7 +115,7 @@ func main() {
   // logout from the appliance
   _, deleteErr := c.R().
     SetHeader("vmware-api-session-id", authToken).
-    Delete("https://" + host + vapiEndpointObj.path)
+    Delete("https://" + host + "/rest/com/vmware/cis/session")
   handleError("logout", deleteErr)
 
   //evaluate overall health status
