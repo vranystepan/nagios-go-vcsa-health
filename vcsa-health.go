@@ -104,8 +104,8 @@ func main() {
       }
     }
 
-    // orange can be changed only to red
-    if overallStatus == "orange" {
+    // orange, yellow and grey can be changed only to red
+    if overallStatus == "orange" || overallStatus == "yellow" || overallStatus == "grey" {
       if healthData.Value == "red" {
         overallStatus = healthData.Value
       }
