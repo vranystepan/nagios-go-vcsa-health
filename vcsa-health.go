@@ -18,11 +18,6 @@ type vapiEndpoint struct {
   path string
 }
 
-var host string = ""
-var hostPassword string = ""
-var hostUsername string = ""
-var subcommand string = ""
-
 // static VAPI resource mapping
 var vapiEndpointList = []vapiEndpoint{
   vapiEndpoint{ name: "mgmt", path: "/rest/appliance/health/applmgmt", },
