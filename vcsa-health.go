@@ -52,7 +52,8 @@ var vapiEndpointList = []vapiEndpoint{
 }
 
 func main() {
-  handleInput()
+  
+  host, hostPassword,hostUsername, subcommand := handleInput()
 
   // create and configure REST client
   c := resty.New()
@@ -140,13 +141,14 @@ func handleError(step string, err error) {
   }
 }
 
-func handleHttpStatus(statusCode int, statusBody string) {
+func handleHttpStatus(statusCode int, statusBody []byte) {
   if statusCode != 200 {
-    exitCritical(statusBody)
+    statusBodyString := string(statusBody[:])
+    exitCritical(statusBodyString)
   }
 }
 
-func handleInput() {
+func handleInput() (string, string, string, string) {
   // specify commandline arguments
   hostPtr := flag.String("host", "", "IP or FQDN of VMware VCSA")
   usernamePtr := flag.String("username", "", "authorized user account name")
@@ -164,7 +166,7 @@ func handleInput() {
   if validateSubcommand(*subcommandPtr) == false { exitUnknown("incorrect subcommand name") }
   
   // assign input params to variables  
-  host, hostUsername, hostPassword, subcommand = *hostPtr, *usernamePtr, *passwordPtr, *subcommandPtr
+  return *hostPtr, *usernamePtr, *passwordPtr, *subcommandPtr
 }
 
 func validateSubcommand(s string) bool {
