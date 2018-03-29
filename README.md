@@ -23,6 +23,9 @@ OK: database is green
 ```
 
 ### Sample error
+
+Time to time VAMI is protesting against any interaction. I don't know why but the output is always like 'unauthenticated.' The idea is to raise a critical warning so monitoring administrator knows that something happend at the API side.
+
 ```bash
 ./vcsa-health --host=vcenter.fqdn --username=user_name --password=wrong_pass --subcommand=database
 CRITICAL: {"type":"com.vmware.vapi.std.errors.unauthenticated","value":{"messages":[{"args":[],"default_message":"Authentication required.","id":"com.vmware.vapi.endpoint.method.authentication.required"}]}}
