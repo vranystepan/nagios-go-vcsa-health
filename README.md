@@ -24,7 +24,7 @@ OK: database is green
 
 ### Sample error
 
-Time to time VAMI is protesting against any interaction. I don't know why but the output is always like 'unauthenticated.' The idea is to raise a critical warning so monitoring administrator knows that something happend at the API side.
+Time to time VAMI is protesting against any interaction. I don't know why but the output is always like 'unauthenticated.' The idea is to raise a critical warning so monitoring administrator knows that something happend at the API side. You'll get the same error when you're trying to log in with unauthorized user account or incorrect credentials.
 
 ```bash
 ./vcsa-health --host=vcenter.fqdn --username=user_name --password=wrong_pass --subcommand=database
