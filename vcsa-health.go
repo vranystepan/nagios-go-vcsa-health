@@ -52,7 +52,7 @@ var vapiEndpointList = []vapiEndpoint{
 }
 
 func main() {
-  
+  //handle commandline params  
   host, hostPassword,hostUsername, subcommand := handleInput()
 
   // create and configure REST client
