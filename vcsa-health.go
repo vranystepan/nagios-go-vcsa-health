@@ -25,30 +25,12 @@ var subcommand string = ""
 
 // static VAPI resource mapping
 var vapiEndpointList = []vapiEndpoint{
-  vapiEndpoint{
-    name: "mgmt",
-    path: "/rest/appliance/health/applmgmt",
-  },
-  vapiEndpoint{
-    name: "database", 
-    path: "/rest/appliance/health/database-storage",
-  },
-  vapiEndpoint{
-    name: "load", 
-    path: "/rest/appliance/health/load",
-  },
-  vapiEndpoint{
-    name: "storage", 
-    path: "/rest/appliance/health/storage",
-  },
-  vapiEndpoint{
-    name: "swap", 
-    path: "/rest/appliance/health/swap",
-  },
-  vapiEndpoint{
-    name: "system", 
-    path: "/rest/appliance/health/system",
-  },
+  vapiEndpoint{ name: "mgmt", path: "/rest/appliance/health/applmgmt", },
+  vapiEndpoint{ name: "database", path: "/rest/appliance/health/database-storage", },
+  vapiEndpoint{ name: "load", path: "/rest/appliance/health/load", },
+  vapiEndpoint{ name: "storage", path: "/rest/appliance/health/storage", },
+  vapiEndpoint{ name: "swap", path: "/rest/appliance/health/swap", },
+  vapiEndpoint{ name: "system", path: "/rest/appliance/health/system", },
 }
 
 func main() {
