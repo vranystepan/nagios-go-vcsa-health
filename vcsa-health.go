@@ -3,10 +3,10 @@ package main
 import (
   "os"
   "fmt"
-  "flag"
   "encoding/json"
   "gopkg.in/resty.v1"
   "crypto/tls"
+  "github.com/jessevdk/go-flags"
 )
 
 type VapiMessage struct {
@@ -16,6 +16,15 @@ type VapiMessage struct {
 type vapiEndpoint struct {
   name string
   path string
+}
+
+// opts specification
+type ProgamOptions struct {
+  Host string `short:"H" long:"host" description:"IP address or FQDN of vCSA you want to connect to" required:"yes"`
+  Username string `short:"u" long:"username" description:"username of auhorized user account" required:"yes"`
+  Password string `short:"p" long:"password" description:"password of authorized user account" required:"yes"`
+  Subcommand string `short:"s" long:"subcommand" description:"name of check you want to execute against vCSA" required:"no" default:"all" choice:"all" choice:"mgmt" choice:"database" choice:"load" choice:"storage" choice:"swap" choice:"system"`
+  Verbose bool `short:"v" long:"verbose" description:"verbose output for debug" required:"no"`
 }
 
 // static VAPI resource mapping
@@ -30,7 +39,7 @@ var vapiEndpointList = []vapiEndpoint{
 
 func main() {
   //handle commandline params  
-  host, hostPassword,hostUsername, subcommand := handleInput()
+  host, hostPassword,hostUsername, subcommand := handleInput(os.Args[1:])
 
   // create and configure REST client
   c := resty.New()
@@ -88,8 +97,6 @@ func main() {
       }
     }
 
-    // red can't be changed to statuses with lesser severity
-
   }
   
   // logout from the appliance
@@ -101,7 +108,7 @@ func main() {
 
   //evaluate overall health status
   switch overallStatus {
-    case "green": exitFinal(statusMessages, "OK", 0)
+    case "green": exitFinal(statusMessages, "OK", 1)
     case "yellow": exitFinal(statusMessages, "WARNING", 1)
     case "orange": exitFinal(statusMessages, "WARNING", 1)
     case "grey": exitFinal(statusMessages, "WARNING", 1)
@@ -125,25 +132,15 @@ func handleHttpStatus(statusCode int, statusBody []byte) {
   }
 }
 
-func handleInput() (string, string, string, string) {
-  // specify commandline arguments
-  hostPtr := flag.String("host", "", "IP or FQDN of VMware VCSA")
-  usernamePtr := flag.String("username", "", "authorized user account name")
-  passwordPtr := flag.String("password", "", "password in plain text")
-  subcommandPtr := flag.String("subcommand", "all", "subcommand you want to execute <all|mgmt|database|load|storage|swap|system>")
+func handleInput(args []string) (string, string, string, string) {
+  opts := ProgamOptions{}
 
-  // parse command line arguments
-  flag.Parse()
+  // we don't want to print error message automatically
+  parser := flags.NewParser(&opts, (flags.HelpFlag | flags.PassDoubleDash))
+  _, err := parser.ParseArgs(args);
+  handleError("input params", err)
 
-  // check command line arguments
-  if *hostPtr == "" { exitUnknown("--host must be set") }
-  if *usernamePtr == "" { exitUnknown("--username must be set") }
-  if *passwordPtr == "" { exitUnknown("--password must be set") }
-  if *subcommandPtr == "" { exitUnknown("--subcommand can't be empty")  }
-  if validateSubcommand(*subcommandPtr) == false { exitUnknown("incorrect subcommand name") }
-  
-  // assign input params to variables  
-  return *hostPtr, *usernamePtr, *passwordPtr, *subcommandPtr
+  return opts.Host, opts.Username, opts.Password, opts.Subcommand
 }
 
 func validateSubcommand(s string) bool {
