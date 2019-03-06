@@ -39,7 +39,7 @@ var vapiEndpointList = []vapiEndpoint{
 
 func main() {
   //handle commandline params  
-  host, hostPassword,hostUsername, subcommand := handleInput(os.Args[1:])
+  host, hostUsername, hostPassword, subcommand := handleInput(os.Args[1:])
 
   // create and configure REST client
   c := resty.New()
